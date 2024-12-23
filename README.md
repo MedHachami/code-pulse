@@ -1,5 +1,4 @@
-# code-pulse
-# Proxy Chemistry MVP
+# CODE-PULSE
 This folder is for frontend, that it is a part of microservices with the whole project repository.
 and have been generated with .
 
