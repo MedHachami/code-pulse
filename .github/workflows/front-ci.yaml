@@ -1,0 +1,48 @@
+name: Build, Test, and Deploy {{ secrets.DOCKER_IMAGE_NAME_FRONTEND }}
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - "code-pulse-ui/**"
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - "code-pulse-ui/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./code-pulse-ui
+
+      - name: Run Unit Tests
+        run: npm test
+        working-directory: ./code-pulse-ui
+
+      - name: Build Angular App
+        run: npm run build -- --output-path=dist
+        working-directory: ./code-pulse-ui
+
+      - name: Docker Build
+        run: |
+          docker build -t ${{ secrets.DOCKER_IMAGE_NAME_FRONTEND }} ./code-pulse-ui
+        working-directory: ./code-pulse-ui
+
+      - name: Push Docker Image
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker push ${{ secrets.DOCKER_IMAGE_NAME_FRONTEND }}
