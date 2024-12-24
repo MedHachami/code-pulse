@@ -49,7 +49,7 @@ We do have Branches as following:
 </ul>
 
 Working progress must be committed and pushed every day.
-If work is done on feature/xxxx or fix/xxxx to develop, you have to initialize Merge Request using Gitlab UI. From your branch to develop.
+If work is done on feature/xxxx or fix/xxxx to develop, you have to initialize Merge Request using Github UI. From your branch to develop.
 The title of the Merge Request must be as this : [FEATURE|FIX|HOTFIX][FRONTEND|BACKEND|SOCLE] : Some comments.
 
 If the work is done on hotfix/xxxx, you have to do the same but the destination of merge request is staging the title will be :
