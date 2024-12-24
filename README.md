@@ -31,7 +31,7 @@ Before working with this project, you must have installed and configured on your
     <li>
         Backend : contains backend microservices
         <ul>
-            <li>api-chemistry : This is the api that handle code pulse related objects</li>
+            <li>code-pulse-api : This is the api that handle code pulse related objects</li>
         </ul>
     </li>
 </ul>
@@ -41,7 +41,6 @@ Our workflow is based on using standards, obviously branches and tags of version
 We do have Branches as following:
 <ul>
   <li>main : The latest stable release on production.</li>
-  <li>staging : For the staging (pre-production).</li>
   <li>uat : For the User Acceptance Test.</li>
   <li>develop : For current developments.</li>
   <li>feature/xxxx : For the new features related to app. the name of branch must starts with prefix "feature/" and tracks origin/develop, and "xxx" is the significant title composed of the number of ticket and short brief title.</li>
