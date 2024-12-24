@@ -8,7 +8,7 @@ on:
       - "code-pulse-ui/**"
   pull_request:
     branches:
-      - develop
+      - 36-github-ci
     paths:
       - "code-pulse-ui/**"
 
