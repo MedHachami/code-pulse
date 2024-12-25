@@ -1,0 +1,32 @@
+server:
+  port: ${APP_PORT:8089}
+
+spring:
+  application:
+    name: code-pulse-api
+  profiles:
+    active: ${ACTIVE_PROFILE}
+  # security:
+  #   enabled: false
+
+code-pulse-api:
+  app:
+    jwtSecret: ${JWT_SECRET}
+    jwtExpirationMs: ${JWT_EXPIRATION}
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+  file:
+    name: logs/code-pulse-api.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+ # Swagger Configuration
+# springfox:
+#   documentation:
+#     swagger-ui:
+#       path: /swagger-ui.html
