@@ -35,7 +35,7 @@ jobs:
       working-directory: ./code-pulse-api   
 
     - name: Docker Build
-      run: docker build -t {{ secrets.DOCKER_IMAGE_NAME_BACKEND }} .
+      run: docker buildx build -t ${{ secrets.DOCKER_IMAGE_NAME_BACKEND }} .
       working-directory: ./code-pulse-api
 
     - name: Push Docker Image
