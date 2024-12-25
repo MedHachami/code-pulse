@@ -19,6 +19,8 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
 
     - name: Set up JDK 17
       uses: actions/setup-java@v3
@@ -35,7 +37,7 @@ jobs:
       working-directory: ./code-pulse-api   
 
     - name: Docker Build
-      run: docker buildx build -t ${{ secrets.DOCKER_IMAGE_NAME_BACKEND }} .
+      run: docker-compose up -d --build
       working-directory: ./code-pulse-api
 
     - name: Push Docker Image
