@@ -1,0 +1,9 @@
+
+code-pulse-ui/.vscode/tasks.json
+code-pulse-ui/.vscode/launch.json
+/code-pulse-ui/.vscode
+code-pulse-api/.gitattributes
+code-pulse-api/.mvn/wrapper/maven-wrapper.properties
+code-pulse-api/mvnw
+code-pulse-api/mvnw.cmd
+code-pulse-ui/.editorconfig
