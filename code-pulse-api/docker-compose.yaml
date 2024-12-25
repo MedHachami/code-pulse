@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  code-pulse-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: code-pulse-api
+    ports:
+      - "${APP_PORT:-8089}:8089"
+    environment:
+      SPRING_PROFILES_ACTIVE: "${ACTIVE_PROFILE:-prod}"
+      SPRING_DATASOURCE_URL: "${SPRING_DATASOURCE_URL:-jdbc:postgresql://db:5432/code_pulse}"
+      SPRING_DATASOURCE_USERNAME: "${SPRING_DATASOURCE_USERNAME:-postgres}"
+      SPRING_DATASOURCE_PASSWORD: "${SPRING_DATASOURCE_PASSWORD:-root}"
+      SPRING_DDL_AUTO: validate
+      APP_PORT: "${APP_PORT:-8089}"
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: "${DRIVER_NAME:-org.postgresql.Driver}"
+    depends_on:
+      - db
+    networks:
+      - code-pulse-api
+    env_file:
+      - .env.prod
+
+  db:
+    image: postgres:latest 
+    container_name: postgres-db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data 
+    environment:
+      POSTGRES_PASSWORD: "${SPRING_DATASOURCE_PASSWORD:-root}"
+      POSTGRES_DB: "${DB_NAME:-code_pulse}"
+      POSTGRES_USER: "${SPRING_DATASOURCE_USERNAME:-postgres}"
+    ports:
+      - "5432:5432" 
+    networks:
+      - code-pulse-api
+    command:
+      --bind-address=0.0.0.0  
+
+volumes:
+  postgres-data: 
+
+networks:
+  code-pulse-api:
+    driver: bridge
