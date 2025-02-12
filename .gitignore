@@ -7,3 +7,4 @@ code-pulse-api/.mvn/wrapper/maven-wrapper.properties
 code-pulse-api/mvnw
 code-pulse-api/mvnw.cmd
 code-pulse-ui/.editorconfig
+code-pulse-api/logs/code-pulse-api.log
