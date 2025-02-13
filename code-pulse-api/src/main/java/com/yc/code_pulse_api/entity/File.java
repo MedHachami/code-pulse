@@ -1,5 +1,7 @@
 package com.yc.code_pulse_api.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -23,6 +25,9 @@ public class File {
 
     @Column(nullable = false)
     private String storageLocation;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "folder_id")

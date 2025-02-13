@@ -2,6 +2,8 @@ package com.yc.code_pulse_api.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -18,6 +20,12 @@ public class Project {
 
     @Column(length = 500)
     private String description;
+
+    private String githubUrl;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)

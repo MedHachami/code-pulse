@@ -2,6 +2,8 @@ package com.yc.code_pulse_api.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -15,6 +17,9 @@ public class Folder {
 
     @Column(nullable = false)
     private String name;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "parent_folder_id")
