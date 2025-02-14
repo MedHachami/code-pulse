@@ -1,18 +1,31 @@
-server:
-  port: ${APP_PORT:8089}
+port: ${APP_PORT:8089}
 
 spring:
   application:
     name: code-pulse-api
   profiles:
-    active: ${ACTIVE_PROFILE}
-  # security:
-  #   enabled: false
+    active: ${ACTIVE_PROFILE:dev}  
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id:  ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - read:user
+              - repo
+        provider:
+          github:
+            authorization-uri: "https://github.com/login/oauth/authorize"
+            token-uri: "https://github.com/login/oauth/access_token"
+            user-info-uri: "https://api.github.com/user"
 
-code-pulse-api:
-  app:
-    jwtSecret: ${JWT_SECRET}
-    jwtExpirationMs: ${JWT_EXPIRATION}
+# code-pulse-api:
+#   app:
+#     jwtSecret: ${JWT_SECRET:code-pulse-api-secret-key}
+#     jwtExpirationMs: ${JWT_EXPIRATION:}
 
 logging:
   level:
@@ -25,8 +38,8 @@ logging:
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
 
- # Swagger Configuration
-# springfox:
-#   documentation:
-#     swagger-ui:
-#       path: /swagger-ui.html
+# Swagger Configuration
+springfox:
+  documentation:
+    swagger-ui:
+      path: /swagger-ui.html

@@ -31,6 +31,6 @@ public class Project {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    @OneToMany(mappedBy = "project")
-    private List<Permission> permissions;
+    // @OneToMany(mappedBy = "project")
+    // private List<Permission> permissions;
 }
