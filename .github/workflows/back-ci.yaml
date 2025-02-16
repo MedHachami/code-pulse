@@ -3,12 +3,12 @@ name: Build, Test, and Deploy {{ secrets.DOCKER_IMAGE_NAME_BACKEND }}
 on:
   push:
     branches:
-      - develop
+      - main
     paths:
       - 'code-pulse-api/**'
   pull_request:
     branches:
-      - develop
+      - main
     paths:
       - 'code-pulse-api/**'
 
