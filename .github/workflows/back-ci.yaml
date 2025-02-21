@@ -62,20 +62,18 @@ jobs:
 
       - name: Run tests with PostgreSQL (prod profile)
         run: |
-        
+          export TZ="Europe/London"
+          echo "Timezone set to: $(date)"
+    
           export SPRING_PROFILES_ACTIVE=prod
           export SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/test_db"
           export SPRING_DATASOURCE_USERNAME="test_user"
           export SPRING_DATASOURCE_PASSWORD="test_password"
-
-          echo "SPRING_PROFILES_ACTIVE: $SPRING_PROFILES_ACTIVE"
-          echo "SPRING_DATASOURCE_URL: $SPRING_DATASOURCE_URL"
-          echo "SPRING_DATASOURCE_USERNAME: $SPRING_DATASOURCE_USERNAME"
-          echo "SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:0:5}..."
-
+    
           mvn test -Dspring.profiles.active=$SPRING_PROFILES_ACTIVE
         working-directory: ./code-pulse-api
         env:
+          TZ: Europe/London
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/test_db
           SPRING_DATASOURCE_USERNAME: test_user
           SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
