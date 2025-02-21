@@ -17,11 +17,12 @@ import com.yc.code_pulse_api.dto.res.RepositoryDTO;
 import com.yc.code_pulse_api.dto.res.github.ContentDTO;
 import com.yc.code_pulse_api.dto.res.github.RepoContentDTO;
 import com.yc.code_pulse_api.exception.*;
+import com.yc.code_pulse_api.service.IGitHubService;
 
 import reactor.core.publisher.Mono;
 
 @Service
-public class GitHubService {
+public class GitHubService implements IGitHubService {
     private static final Logger log = LogManager.getLogger(GitHubService.class);
     
     private final WebClient webClient;
@@ -44,19 +45,18 @@ public class GitHubService {
     public List<RepositoryDTO> getUserRepositories(int page, int size) {
         return webClient.get()
             .uri(uriBuilder -> uriBuilder
-                .path("/user/repos")
+                .path("/user/repos")  // Remove the /api/github prefix
                 .queryParam("page", page)
                 .queryParam("per_page", size)
                 .queryParam("sort", "updated")
                 .build())
             .retrieve()
             .onStatus(HttpStatusCode::isError, this::handleError)
-
             .bodyToFlux(RepositoryDTO.class)
+            .doOnNext(repo -> log.debug("Retrieved repository: {}", repo.getName()))
             .collectList()
             .block();
     }
-    
     // Get repository by owner and name
     public RepositoryDTO getRepository(String owner, String repo) {
         return webClient.get()

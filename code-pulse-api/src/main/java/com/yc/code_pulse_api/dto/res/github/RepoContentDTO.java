@@ -1,11 +1,13 @@
 package com.yc.code_pulse_api.dto.res.github;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import java.util.List;
+import lombok.Builder;
+
+
 
 @Data
-@NoArgsConstructor
+@Builder
 public class RepoContentDTO {
     private String repository;
     private String owner;
