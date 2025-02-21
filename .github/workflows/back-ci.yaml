@@ -52,14 +52,6 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Run Unit Tests
-        run: mvn test
-        working-directory: ./code-pulse-api
-        env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/test_db
-          SPRING_DATASOURCE_USERNAME: test_user
-          SPRING_DATASOURCE_PASSWORD: test_password
-
       - name: Build with Maven
         run: mvn clean install -DskipTests
         working-directory: ./code-pulse-api
@@ -70,10 +62,11 @@ jobs:
 
       - name: Run tests with PostgreSQL (prod profile)
         run: |
+        
           export SPRING_PROFILES_ACTIVE=prod
-          export SPRING_DATASOURCE_URL=${{ env.SPRING_DATASOURCE_URL }}
-          export SPRING_DATASOURCE_USERNAME=${{ env.SPRING_DATASOURCE_USERNAME }}
-          export SPRING_DATASOURCE_PASSWORD=${{ env.SPRING_DATASOURCE_PASSWORD }}
+          export SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/test_db"
+          export SPRING_DATASOURCE_USERNAME="test_user"
+          export SPRING_DATASOURCE_PASSWORD="test_password"
 
           echo "SPRING_PROFILES_ACTIVE: $SPRING_PROFILES_ACTIVE"
           echo "SPRING_DATASOURCE_URL: $SPRING_DATASOURCE_URL"
