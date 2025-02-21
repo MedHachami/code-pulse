@@ -15,7 +15,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+    env:
+      TZ: "Europe/London" # Change this to your preferred timezone
+
     services:
       postgres:
         image: postgres:latest
@@ -34,6 +36,11 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Set timezone
+        run: |
+          sudo timedatectl set-timezone $TZ
+          echo "Timezone set to: $(date)"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -58,14 +65,27 @@ jobs:
         working-directory: ./code-pulse-api
         
       - name: Run tests with H2 (dev profile)
-        run: mvn test -Dspring.profiles.active=prod
-        working-directory: ./code-pulse-api
-
-      - name: Run tests with PostgreSQL (prod profile)
         run: mvn test -Dspring.profiles.active=dev
         working-directory: ./code-pulse-api
 
-    
+      - name: Run tests with PostgreSQL (prod profile)
+        run: |
+          export SPRING_PROFILES_ACTIVE=prod
+          export SPRING_DATASOURCE_URL=${{ env.SPRING_DATASOURCE_URL }}
+          export SPRING_DATASOURCE_USERNAME=${{ env.SPRING_DATASOURCE_USERNAME }}
+          export SPRING_DATASOURCE_PASSWORD=${{ env.SPRING_DATASOURCE_PASSWORD }}
+
+          echo "SPRING_PROFILES_ACTIVE: $SPRING_PROFILES_ACTIVE"
+          echo "SPRING_DATASOURCE_URL: $SPRING_DATASOURCE_URL"
+          echo "SPRING_DATASOURCE_USERNAME: $SPRING_DATASOURCE_USERNAME"
+          echo "SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:0:5}..."
+
+          mvn test -Dspring.profiles.active=$SPRING_PROFILES_ACTIVE
+        working-directory: ./code-pulse-api
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/test_db
+          SPRING_DATASOURCE_USERNAME: test_user
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2
