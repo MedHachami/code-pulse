@@ -6,7 +6,7 @@ import {
 import { ResizableBox } from 'react-resizable';
 import FilesPane from './filespane';
 import LeftNav from './leftnav';
-// import BottomBar from './bottombar';
+import BottomBar from './bottombar';
 // import CodeArea from './codearea';
 // import SearchPane from './searchpane';
 // import ExtensionPane from './extensionpane';
@@ -138,7 +138,7 @@ const VSCode: React.FC = () => {
           toggleCurrentFile={setFile}
         /> */}
       </Content>
-      {/* <BottomBar /> */}
+      <BottomBar />
     </ContentWrapper>
   );
 };
