@@ -1,35 +1,32 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// import React from 'react';
+// import VSCode from 'Components/vscode';
+import { ThemeProvider } from 'styled-components';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { GlobalStyle, themes } from './Components/themecontext';
+import VSCode from './Components/VSCode';
+import Loading from './Components/Loading';
+import { useState, useEffect } from 'react';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    //fetching code from backend
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Router>
+      <ThemeProvider theme={themes.dark}>
+        <GlobalStyle />
+        {isLoading ? <Loading /> : <VSCode />}
+      </ThemeProvider>
+    </Router>
+  );
+};
 
-export default App
+export default App;
