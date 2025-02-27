@@ -7,7 +7,6 @@ interface ThemeProps {
 }
 
 const BottomBarWrapper = styled.div<ThemeProps>`
-  background: ${(props) => props.theme.darkbg};
   height: 25px;
   border-top: white;
   color: #e1e4e8;

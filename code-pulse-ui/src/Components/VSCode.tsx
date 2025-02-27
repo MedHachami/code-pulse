@@ -44,8 +44,7 @@ interface ResizeHandleProps {
 }
 
 const VSCode: React.FC = () => {
-  console.log("inid");
-  
+
   const [file, setFile] = useState<string>('html');
   const [width, setWidth] = useState<number>(240);
   const [initWidth, setInitWidth] = useState<number>(148);
@@ -72,7 +71,7 @@ const VSCode: React.FC = () => {
   useEffect(() => {
     updateWidths(currentLocation.pathname);
     navigate(currentLocation.pathname);
-  }, [currentLocation.pathname]);
+  }, [navigate]);
 
   const onResize = (_event: React.SyntheticEvent, { size }: ResizeHandleProps): void => {
     setWidth(size.width);

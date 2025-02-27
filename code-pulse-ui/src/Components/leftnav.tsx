@@ -22,9 +22,9 @@ declare module 'styled-components' {
   }
 }
 
-// Add interface for NavItem props
+// Update interface to use transient prop
 interface NavItemProps extends ThemeProps {
-  isCurrent?: boolean;
+  $isCurrent?: boolean;
 }
 
 const NavWrapper = styled.div<ThemeProps>`
@@ -44,7 +44,7 @@ const NavItem = styled.div<NavItemProps>`
   align-items: center;
   height: 48px;
   width: 100%;
-  ${(props) => (props.isCurrent ? `border-left: ${props.theme.border} 2px solid;` : null)}
+  ${(props) => (props.$isCurrent ? `border-left: ${props.theme.border} 2px solid;` : null)}
   background: ${(props) => (props.theme.leftnav ? props.theme.leftnav : null)};
 `;
 
@@ -124,7 +124,7 @@ const LeftNav: React.FC = () => {
         >
           <NavItem
             theme={theme as ThemeProps['theme']}
-            isCurrent={location.pathname.slice(1) === option}
+            $isCurrent={location.pathname.slice(1) === option}
           >
             {renderIcon(option, theme as ThemeProps['theme'], location.pathname.slice(1))}
           </NavItem>

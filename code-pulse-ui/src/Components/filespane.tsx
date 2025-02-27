@@ -5,12 +5,12 @@ import { ArrowIcon } from '../icons/icons';
 import Folder from './folder';
 
 interface FilesWrapperProps {
-  paneWidth: number;
+  $paneWidth: number;
   theme: DefaultTheme;
 }
 
 const FilesWrapper = styled.div<FilesWrapperProps>`
-  width: ${(props) => `${props.paneWidth}px`};
+  width: ${(props) => `${props.$paneWidth}px`};
   height: 100%;
   background-color: ${(props) => props.theme.explorer};
   color: white;
@@ -50,7 +50,7 @@ interface FilesPaneProps {
 const FilesPane: React.FC<FilesPaneProps> = ({ openFile, toggleCurrentFile, paneWidth }) => {
   const theme = useContext(ThemeContext);
   return (
-    <FilesWrapper paneWidth={paneWidth} theme={theme}>
+    <FilesWrapper $paneWidth={paneWidth} theme={theme}>
       <Title>
         <PaneName>EXPLORER</PaneName>
         <MoreInfo>
