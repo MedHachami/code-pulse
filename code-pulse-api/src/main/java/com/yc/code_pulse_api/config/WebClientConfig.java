@@ -5,14 +5,16 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 
 @Configuration
-public class WebClientConfig {
+public class WebClientConfig implements WebMvcConfigurer {
     private static final Logger log = LogManager.getLogger(WebClientConfig.class);
-
 
     private static final String GITHUB_API_BASE_URL = "https://api.github.com";
     private static final String GITHUB_ACCEPT_HEADER = "application/vnd.github.v3+json";
@@ -36,4 +38,18 @@ public class WebClientConfig {
             })
             .build();
     }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")
+                .allowedOrigins("http://localhost:3000")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*");
+    }
+   
 }

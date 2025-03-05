@@ -3,9 +3,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -15,18 +15,22 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**", "/login/**", "/error**").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers("/api/github/**").authenticated()
+                .anyRequest().permitAll()
             )
             .oauth2Login(oauth2 -> oauth2
-                .defaultSuccessUrl("/auth/token", true)
+                .authorizationEndpoint(authorization -> authorization
+                    .baseUri("/oauth2/authorization")
+                )
             );
+        
         return http.build();
     }
 
-
     @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
+    public WebClient webClient() {
+        return WebClient.builder()
+            .baseUrl("https://api.github.com")
+            .build();
     }
 }

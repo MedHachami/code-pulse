@@ -3,15 +3,17 @@ port: ${APP_PORT:8089}
 spring:
   application:
     name: code-pulse-api
+  config:
+    import: optional:file:.env[.properties]
   profiles:
     active: ${ACTIVE_PROFILE:dev}  
-  security:
+  # security:
     oauth2:
       client:
         registration:
           github:
-            client-id:  ${GITHUB_CLIENT_ID}
-            client-secret: ${GITHUB_CLIENT_SECRET}
+            client-id: ${GITHUB_CLIENT_ID:Ov23liLi586HLCo5C0Vk}
+            client-secret: ${GITHUB_CLIENT_SECRET:a3ab2e4a5d4fd7e22258897569b5e7dae429f592}
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             scope:
               - read:user

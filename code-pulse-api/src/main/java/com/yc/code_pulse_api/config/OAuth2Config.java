@@ -12,12 +12,17 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 
 @Configuration
 public class OAuth2Config {
+
+    private String clientId = EnvironmentLoader.get("GITHUB_CLIENT_ID");
+    private String clientSecret = EnvironmentLoader.get("GITHUB_CLIENT_SECRET");
+
+
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
         ClientRegistration githubRegistration = ClientRegistration
             .withRegistrationId("github")
-            .clientId(System.getenv("GITHUB_CLIENT_ID"))
-            .clientSecret(System.getenv("GITHUB_CLIENT_SECRET"))
+            .clientId(clientId)
+            .clientSecret(clientSecret)
             .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")

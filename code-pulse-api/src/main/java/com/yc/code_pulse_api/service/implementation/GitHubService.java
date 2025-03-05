@@ -5,9 +5,15 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,16 +25,31 @@ import com.yc.code_pulse_api.dto.res.github.RepoContentDTO;
 import com.yc.code_pulse_api.exception.*;
 import com.yc.code_pulse_api.service.IGitHubService;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @Service
+@Slf4j
 public class GitHubService implements IGitHubService {
     private static final Logger log = LogManager.getLogger(GitHubService.class);
     
     private final WebClient webClient;
+    private final OAuth2AuthorizedClientService clientService;
     
-    public GitHubService(@Qualifier("githubWebClient") WebClient webClient) {
+    @Autowired
+    public GitHubService(WebClient webClient, OAuth2AuthorizedClientService clientService) {
         this.webClient = webClient;
+        this.clientService = clientService;
+    }
+    
+    private String getAccessToken() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
+        OAuth2AuthorizedClient client = clientService.loadAuthorizedClient(
+            oauthToken.getAuthorizedClientRegistrationId(),
+            oauthToken.getName()
+        );
+        return client.getAccessToken().getTokenValue();
     }
     
     // Get authenticated user info
@@ -45,11 +66,12 @@ public class GitHubService implements IGitHubService {
     public List<RepositoryDTO> getUserRepositories(int page, int size) {
         return webClient.get()
             .uri(uriBuilder -> uriBuilder
-                .path("/user/repos")  // Remove the /api/github prefix
+                .path("/user/repos")
                 .queryParam("page", page)
                 .queryParam("per_page", size)
                 .queryParam("sort", "updated")
                 .build())
+            .headers(headers -> headers.setBearerAuth(getAccessToken()))
             .retrieve()
             .onStatus(HttpStatusCode::isError, this::handleError)
             .bodyToFlux(RepositoryDTO.class)
@@ -77,6 +99,7 @@ public class GitHubService implements IGitHubService {
                 .path("/repos/{owner}/{repo}/contents{path}")
                 .queryParamIfPresent("ref", Optional.ofNullable(ref))
                 .build(owner, repo, path != null ? "/" + path : ""))
+            .headers(headers -> headers.setBearerAuth(getAccessToken()))
             .retrieve()
             .onStatus(HttpStatusCode::isError, this::handleError)
 
@@ -94,6 +117,7 @@ public class GitHubService implements IGitHubService {
                         .path("/repos/{owner}/{repo}/contents/{path}")
                         .queryParamIfPresent("ref", Optional.ofNullable(ref))
                         .build(owner, repo, path))  
+                .headers(headers -> headers.setBearerAuth(getAccessToken()))
                 .header(HttpHeaders.ACCEPT, "application/vnd.github.v3.raw")
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, this::handleError)
