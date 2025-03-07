@@ -5,12 +5,14 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-
 
 @Configuration
 public class WebClientConfig implements WebMvcConfigurer {
@@ -21,21 +23,19 @@ public class WebClientConfig implements WebMvcConfigurer {
     private static final String GITHUB_API_VERSION = "2022-11-28";
 
     @Bean
-    public WebClient githubWebClient() {
-        String githubToken = System.getenv("GITHUB_TOKEN");
-        if (githubToken == null || githubToken.isBlank()) {
-            log.warn("GITHUB_TOKEN is not set!");
-        }
+    public WebClient webClient() {
+        ExchangeStrategies strategies = ExchangeStrategies.builder()
+            .codecs(configurer -> {
+                configurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder());
+                configurer.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder());
+                configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024); // 16MB buffer
+            })
+            .build();
 
         return WebClient.builder()
-            .baseUrl(GITHUB_API_BASE_URL)
-            .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
-            .defaultHeader(HttpHeaders.ACCEPT, GITHUB_ACCEPT_HEADER)
-            .defaultHeader("X-GitHub-Api-Version", GITHUB_API_VERSION)
-            .filter((request, next) -> {
-                log.debug("Sending request: {} {}", request.method(), request.url());
-                return next.exchange(request);
-            })
+            .baseUrl("https://api.github.com")
+            .defaultHeader("Accept", "application/json")
+            .exchangeStrategies(strategies)
             .build();
     }
 
@@ -51,5 +51,4 @@ public class WebClientConfig implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*");
     }
-   
 }

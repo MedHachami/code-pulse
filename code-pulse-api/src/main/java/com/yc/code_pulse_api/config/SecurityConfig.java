@@ -27,7 +27,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
+    // @Bean
     public WebClient webClient() {
         return WebClient.builder()
             .baseUrl("https://api.github.com")

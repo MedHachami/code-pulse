@@ -99,10 +99,12 @@ public class GitHubService implements IGitHubService {
                 .path("/repos/{owner}/{repo}/contents{path}")
                 .queryParamIfPresent("ref", Optional.ofNullable(ref))
                 .build(owner, repo, path != null ? "/" + path : ""))
-            .headers(headers -> headers.setBearerAuth(getAccessToken()))
+            .headers(headers -> {
+                headers.setBearerAuth(getAccessToken());
+                headers.set("Accept", "application/json");
+            })
             .retrieve()
             .onStatus(HttpStatusCode::isError, this::handleError)
-
             .bodyToFlux(ContentDTO.class)
             .collectList()
             .block();
@@ -113,17 +115,18 @@ public class GitHubService implements IGitHubService {
     // Get raw file content
     public String getFileContent(String owner, String repo, String path, String ref) {
         return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/repos/{owner}/{repo}/contents/{path}")
-                        .queryParamIfPresent("ref", Optional.ofNullable(ref))
-                        .build(owner, repo, path))  
-                .headers(headers -> headers.setBearerAuth(getAccessToken()))
-                .header(HttpHeaders.ACCEPT, "application/vnd.github.v3.raw")
-                .retrieve()
-                .onStatus(HttpStatusCode::isError, this::handleError)
-
-                .bodyToMono(String.class)
-                .block();
+            .uri(uriBuilder -> uriBuilder
+                .path("/repos/{owner}/{repo}/contents/{path}")
+                .queryParamIfPresent("ref", Optional.ofNullable(ref))
+                .build(owner, repo, path))
+            .headers(headers -> {
+                headers.setBearerAuth(getAccessToken());
+                headers.set("Accept", "application/vnd.github.v3.raw");
+            })
+            .retrieve()
+            .onStatus(HttpStatusCode::isError, this::handleError)
+            .bodyToMono(String.class)
+            .block();
     }
     
     // Improved error handling

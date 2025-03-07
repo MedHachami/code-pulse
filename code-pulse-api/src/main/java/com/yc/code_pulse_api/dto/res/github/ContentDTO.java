@@ -1,21 +1,26 @@
 package com.yc.code_pulse_api.dto.res.github;
 
-
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-@Builder
 public class ContentDTO {
     private String name;
     private String path;
     private String sha;
-    private long size;
+    private Long size;
     private String url;
-    private String html_url;
-    private String git_url;
-    private String download_url;
+    
+    @JsonProperty("html_url")
+    private String htmlUrl;
+    
+    @JsonProperty("git_url")
+    private String gitUrl;
+    
+    @JsonProperty("download_url")
+    private String downloadUrl;
+    
     private String type;
-
-   
+    private String content;
+    private String encoding;
 }
