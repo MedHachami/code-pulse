@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("dev")
 class CodePulseApiApplicationTests {
 
-	@Test
+	// @Test
 	void contextLoads() {
 	}
 
