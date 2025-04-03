@@ -81,7 +81,8 @@ function CopilotView() {
                 bg-[#8e51ff] text-white font-medium  decoration-1 
                 hover:bg-[#8ec5ff] transition-colors duration-200
                 focus:outline-none focus:ring-2 focus:ring-[#861043] focus:ring-offset-2
-                active:bg-[#1c398e]"                onClick={generateCode}
+                active:bg-[#1c398e]"                
+                onClick={generateCode}
                 disabled={isRunning}
             >
                 {isRunning ? "Generating..." : "Generate Code"}

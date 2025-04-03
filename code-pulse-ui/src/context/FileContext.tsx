@@ -632,6 +632,11 @@ function FileContextProvider({ children }: { children: ReactNode }) {
 
     const handleUserJoined = useCallback(
         ({ user }: { user: RemoteUser }) => {
+            console.log("Received user object:", user);
+            if (!user || !user.socketId) {
+                console.error("Invalid user or missing socketId");
+                return;
+            }
             // toast.success(`${user.username} joined the room`)    
 
             // Send the code and drawing data to the server

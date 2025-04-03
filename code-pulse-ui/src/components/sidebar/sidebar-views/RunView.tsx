@@ -36,7 +36,12 @@ function RunView() {
             <div className="flex h-[90%] w-full flex-col items-end gap-2 md:h-[92%]">
                 <div className="relative w-full">
                     <select
-                        className="w-full rounded-md border-none bg-darkHover px-4 py-2 text-white outline-none"
+                        className="rounded-md border bg-transparent  px-4 py-2 text-white outline-none
+                        bg-[#8e51ff]  font-medium  decoration-1 
+                     hover:bg-[#8ec5ff] hover:text-black transition-colors duration-200
+                     focus:outline-none focus:ring-2 focus:ring-[#861043] focus:ring-offset-2
+                     active:bg-[#1c398e]
+                        "
                         value={JSON.stringify(selectedLanguage)}
                         onChange={handleLanguageChange}
                     >
@@ -62,12 +67,18 @@ function RunView() {
                     />
                 </div>
                 <textarea
-                    className="min-h-[120px] w-full resize-none rounded-md border-none bg-darkHover p-2 text-white outline-none"
+                    className="min-h-[120px] w-full rounded-md border border-white bg-transparent p-2 text-white outline-none
+                    focus:outline-none focus:border-[#8e51ff] focus:border-2 focus:ring-2 focus:ring-[#8e51ff]/20
+                    "
                     placeholder="Write you input here..."
                     onChange={(e) => setInput(e.target.value)}
                 />
                 <button
-                    className="flex w-full justify-center rounded-md bg-primary p-2 font-bold text-black outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                  className="mt-2 text-center py-2 px-4 rounded-md w-full
+                  bg-[#8e51ff] text-white font-medium  decoration-1 
+                  hover:bg-[#8ec5ff] transition-colors duration-200
+                  focus:outline-none focus:ring-2 focus:ring-[#861043] focus:ring-offset-2
+                  active:bg-[#1c398e]"       
                     onClick={runCode}
                     disabled={isRunning}
                 >

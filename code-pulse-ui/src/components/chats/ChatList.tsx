@@ -2,9 +2,9 @@
 
 import { useAppContext } from "@/context/AppContext"
 import { useChatRoom } from "@/context/ChatContext"
+import { ChatMessage } from "@/types/chat"
 import { type SyntheticEvent, useEffect, useRef } from "react"
 import { FaUser } from "react-icons/fa6";
-
 
 function ChatList() {
   const { messages, isNewMessage, setIsNewMessage, lastScrollHeight, setLastScrollHeight } = useChatRoom()
@@ -36,30 +36,30 @@ function ChatList() {
       onScroll={handleScroll}
     >
       {/* Chat messages */}
-      {messages.map((message, index) => {
+      {messages.map((message: ChatMessage) => {
+        if (!message || typeof message !== 'object') return null;
+        const isCurrentUser = message.username === currentUser.username;
+        
         return (
           <div
-            key={index}
+            key={message.id}
             className={
               "mb-2 w-[70%] self-start break-words rounded-md bg-dark px-3 py-2" +
-              (message.username === currentUser.username ? " ml-auto " : "")
+              (isCurrentUser ? " ml-auto " : "")
             }
             style={{'marginRight':'65px'}}
           >
-             <div className="flex items-center gap-2 py-1"
-             
-             >
+             <div className="flex items-center gap-2 py-1">
               <FaUser 
                 size={16}
                 className="text-gray-400 hover:text-[#8e51ff] cursor-pointer transition-colors flex-shrink-0"
               />
-              <p>{message.message}</p>
+              <p className="break-words">{message.message || ''}</p>
             </div>
             <div className="flex justify-between">
-              <span className="text-xs text-primary">{message.username}</span>
-              <span className="text-xs text-white">{message.timestamp}</span>
+              <span className="text-xs text-primary">{message.username || ''}</span>
+              <span className="text-xs text-white">{message.timestamp || ''}</span>
             </div>
-           
           </div>
         )
       })}

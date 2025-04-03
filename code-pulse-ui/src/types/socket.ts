@@ -20,12 +20,14 @@ enum SocketEvent {
     USER_ONLINE = "online",
     SEND_MESSAGE = "send-message",
     RECEIVE_MESSAGE = "receive-message",
+    MESSAGE_SENT_CONFIRMATION = "message-sent-confirmation",
     TYPING_START = "typing-start",
     TYPING_PAUSE = "typing-pause",
     USERNAME_EXISTS = "username-exists",
     REQUEST_DRAWING = "request-drawing",
     SYNC_DRAWING = "sync-drawing",
     DRAWING_UPDATE = "drawing-update",
+   
 }
 
 interface SocketContext {

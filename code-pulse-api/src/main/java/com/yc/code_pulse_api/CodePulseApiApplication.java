@@ -14,7 +14,7 @@ import java.util.*;
 
 @SpringBootApplication
 public class CodePulseApiApplication {
-	    private static final Map<String, User> userSocketMap = new ConcurrentHashMap<>();
+    static final Map<String, User> userSocketMap = new ConcurrentHashMap<>();
 
     public static void main(String[] args) {
         SpringApplication.run(CodePulseApiApplication.class, args);
@@ -46,8 +46,7 @@ public class CodePulseApiApplication {
         return server;
     }
 
-    private static void registerEventListeners(SocketIOServer server) {
-        // All your event listeners go here (join-request, offline, online, send-message, etc.)
+    static void registerEventListeners(SocketIOServer server) {
         server.addEventListener("join-request", Map.class, (client, data, ackSender) -> {
             String roomId = (String) data.get("roomId");
             String username = (String) data.get("username");
@@ -149,42 +148,18 @@ public class CodePulseApiApplication {
         });
     }
 
-    private static void emitToRoom(SocketIOServer server, SocketIOClient client, String event, Map<String, Object> data) {
-        User user = userSocketMap.get(client.getSessionId().toString());
-        if (user != null) {
-            server.getRoomOperations(user.getRoomId()).sendEvent(event, data);
+    private static void emitToRoom(SocketIOServer server, SocketIOClient senderClient, String event, Map<String, Object> data) {
+        User sender = userSocketMap.get(senderClient.getSessionId().toString());
+        if (sender != null) {
+            Collection<SocketIOClient> clients = server.getRoomOperations(sender.getRoomId()).getClients();
+            for (SocketIOClient client : clients) {
+                if (!client.getSessionId().equals(senderClient.getSessionId())) {
+                    client.sendEvent(event, data);
+                }
+            }
         }
     }
+    
 
-    // @Configuration
-    // @EnableWebSocketMessageBroker
-    // public static class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-    //     @Override
-    //     public void configureMessageBroker(MessageBrokerRegistry config) {
-    //         config.enableSimpleBroker("/topic");
-    //         config.setApplicationDestinationPrefixes("/app");
-    //     }
-
-    //     @Override
-    //     public void registerStompEndpoints(StompEndpointRegistry registry) {
-    //         registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
-    //     }
-    // }
-
-    // @Configuration
-    // public static class WebConfig implements WebMvcConfigurer {
-    //     @Override
-    //     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    //         registry.addResourceHandler("/**")
-    //                 .addResourceLocations("classpath:/static/")
-    //                 .resourceChain(true)
-    //                 .addResolver(new PathResourceResolver() {
-    //                     @Override
-    //                     protected org.springframework.core.io.Resource getResource(String resourcePath, org.springframework.core.io.Resource location) throws IOException {
-    //                         org.springframework.core.io.Resource requestedResource = location.createRelative(resourcePath);
-    //                         return requestedResource.exists() && requestedResource.isReadable() ? requestedResource : new ClassPathResource("/static/index.html");
-    //                     }
-    //                 });
-    //     }
-    // }
+  
 }

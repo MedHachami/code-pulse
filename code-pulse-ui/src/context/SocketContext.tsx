@@ -1,4 +1,3 @@
-
 import { DrawingData } from "../types/app"
 import {
     SocketContext as SocketContextType,
@@ -85,6 +84,18 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
     const handleDrawingSync = useCallback(({ drawingData }: { drawingData: DrawingData }) => {
         setDrawingData(drawingData)
     }, [setDrawingData])
+
+    const handleUserJoined = useCallback(
+        ({ user }: { user: RemoteUser }) => {
+            console.log("Received user object:", user);
+            if (!user || !user.socketId) {
+                console.error("Invalid user or missing socketId");
+                return;
+            }
+            // Handle user joined logic here
+        },
+        [setUsers, socket],
+    );
 
     useEffect(() => {
         socket.on("connect_error", handleError)

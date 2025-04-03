@@ -26,17 +26,33 @@ function ChatContextProvider({ children }: { children: ReactNode }) {
     const [lastScrollHeight, setLastScrollHeight] = useState<number>(0)
 
     useEffect(() => {
-        socket.on(
-            SocketEvent.RECEIVE_MESSAGE,
-            ({ message }: { message: ChatMessage }) => {
-                setMessages((messages) => [...messages, message])
-                setIsNewMessage(true)
-            },
-        )
+        const handleReceiveMessage = (data: { message: ChatMessage }) => {
+            if (data.message && typeof data.message === 'object') {
+                setMessages(prevMessages => [...prevMessages, data.message]);
+                setIsNewMessage(true);
+            }
+        };
+
+        const handleMessageSentConfirmation = (data: { message: ChatMessage }) => {
+            if (data.message && typeof data.message === 'object') {
+                setMessages(prevMessages => [...prevMessages, data.message]);
+                setIsNewMessage(true);
+            }
+        };
+
+        // Remove any existing listeners first
+        socket.off(SocketEvent.RECEIVE_MESSAGE);
+        socket.off(SocketEvent.MESSAGE_SENT_CONFIRMATION);
+
+        // Add listeners for both events
+        socket.on(SocketEvent.MESSAGE_SENT_CONFIRMATION, handleMessageSentConfirmation);
+        socket.on(SocketEvent.RECEIVE_MESSAGE, handleReceiveMessage);
+
         return () => {
-            socket.off(SocketEvent.RECEIVE_MESSAGE)
-        }
-    }, [socket])
+            socket.off(SocketEvent.RECEIVE_MESSAGE);
+            socket.off(SocketEvent.MESSAGE_SENT_CONFIRMATION);
+        };
+    }, [socket]);
 
     return (
         <ChatContext.Provider
